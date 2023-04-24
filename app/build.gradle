@@ -76,4 +76,18 @@ dependencies {
     // Icons
     implementation "androidx.compose.material:material-icons-core:${compose_ui_version}"
     implementation "androidx.compose.material:material-icons-extended:${compose_ui_version}"
+
+    // AsyncImage
+    implementation("io.coil-kt:coil-compose:2.3.0")
+
+    // Navigation
+    implementation "androidx.navigation:navigation-compose:2.5.3"
+
+    // Animated Navigation
+//    implementation("com.google.accompanist:accompanist-navigation-animation:0.16.1")
+
+    // Swipe-Refresh
+    implementation "com.google.accompanist:accompanist-swiperefresh:0.24.2-alpha"
+
+
 }

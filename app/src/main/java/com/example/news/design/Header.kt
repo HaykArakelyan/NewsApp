@@ -3,23 +3,36 @@ package com.example.news.design
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.example.news.components.SortButton
+import com.example.news.constants.CATEGORIES
+import com.example.news.constants.DEFAULT_DARK_BLUE_COLOR
 
 
 @Composable
-fun Header() {
+fun Header(
+    onCategoryClickWithQ: (String, String) -> Unit,
+    onCategoryClick: (String) -> Unit,
+    onSearchWithQ: (String) -> Unit
+) {
+
+    var searchBarContent by remember {
+        mutableStateOf<String>("")
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFF37339A))
+            .background(DEFAULT_DARK_BLUE_COLOR)
             .height(200.dp)
     ) {
         Column(
@@ -38,43 +51,44 @@ fun Header() {
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
 
-                SearchBar()
+                SearchBar(
+                    searchBarContent,
+                    onSearchBarUpdate = { it: String ->
+                        searchBarContent = it
+                    },
+                    onSearchWithQ = onSearchWithQ
+                )
 
 
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(
-                        Icons.Outlined.Tune,
-                        contentDescription = "filter",
-                        tint = Color(0xFF37339A),
-                        modifier = Modifier
-                            .background(Color.White, shape = RoundedCornerShape(percent = 10))
-                            .size(55.dp)
-                            .rotate(-90f),
-                    )
-                }
+
+                SortButton(
+                    CATEGORIES,
+                    searchBarContent,
+                    onCategoryClick,
+                    onCategoryClickWithQ
+                )
             }
         }
     }
 }
 
 @Composable
-fun SearchBar() {
-    var result by remember {
-        mutableStateOf("")
-    }
-
-
+fun SearchBar(
+    searchBarContent: String,
+    onSearchBarUpdate: (String) -> Unit,
+    onSearchWithQ: (String) -> Unit
+) {
     TextField(
         modifier = Modifier
             .background(Color.White, shape = RoundedCornerShape(percent = 15)),
-        value = result,
+        value = searchBarContent,
         onValueChange = {
-            result = it
+            onSearchBarUpdate(it)
         },
         leadingIcon = {
             IconButton(
                 onClick = {
-
+                    onSearchWithQ(searchBarContent)
                 }
             ) {
                 Icon(
@@ -85,7 +99,12 @@ fun SearchBar() {
         },
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = Color.White
+        ),
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                onSearchWithQ(searchBarContent)
+            }
         )
-
     )
 }
